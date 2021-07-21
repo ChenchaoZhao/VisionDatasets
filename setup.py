@@ -1,5 +1,6 @@
-from liter import __version__
 from setuptools import find_packages, setup
+
+from visiondatasets import __version__
 
 # load readme
 with open("README.md", "r") as f:
@@ -7,14 +8,14 @@ with open("README.md", "r") as f:
 
 
 setup(
-    name="torchliter",
+    name="visiondatasets",
     version=__version__,
     author="Chenchao Zhao",
     author_email="chenchao.zhao@gmail.com",
-    description="A lightweight training tool for pytorch projects.",
+    description="A collection of vision datasets as an addition to torchvision datasets",
     packages=find_packages(exclude=["tests"]),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=["torch", "numpy", "dataclasses"],
+    install_requires=["torch", "numpy", "torchvision", "pillow"],
     license="MIT",
 )
