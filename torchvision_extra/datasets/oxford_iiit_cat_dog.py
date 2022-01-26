@@ -23,11 +23,10 @@ class OxfordCatDog(VisionDataset):
         self.split = split
 
         self.load_mask = False
-        self.load_bbox = False
         self.load_label = False
 
         def set_flag(mode):
-            assert mode in {"mask", "bbox", "label"}
+            assert mode in {"mask", "label"}
             setattr(self, f"load_{mode}", True)
 
         if isinstance(mode, str):
@@ -37,20 +36,15 @@ class OxfordCatDog(VisionDataset):
                 set_flag(m)
         else:
             raise TypeError(
-                f"mode should be str, List[str], Tuple[str], Set[str] but get type {type(mode)}"
+                f"mode should be str, List[str], Tuple[str], Set[str] but got type {type(mode)}"
             )
 
         self.mode = mode
-
         self.image_root = os.path.join(root, "images")
         self.annotation_root = os.path.join(root, "annotations")
 
         self._load_readme()
-
         self._load_labels(split)
-
-        if self.load_bbox:
-            self._load_bboxes()
 
     def _load_readme(self):
         with open(os.path.join(self.annotation_root, "README"), "r") as f:
@@ -113,7 +107,6 @@ class OxfordCatDog(VisionDataset):
     def __getitem__(self, idx):
 
         fn = self.filenames[idx]
-
         out = {}
 
         img = Image.open(os.path.join(self.image_root, fn + ".jpg")).convert("RGB")
