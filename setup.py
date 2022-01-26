@@ -12,7 +12,7 @@ setup(
     version=__version__,
     author="Chenchao Zhao",
     author_email="chenchao.zhao@gmail.com",
-    description="A collection of vision datasets as an addition to torchvision datasets",
+    description="Additional datasets compatible with torchvision format",
     packages=find_packages(exclude=["tests"]),
     long_description=long_description,
     long_description_content_type="text/markdown",
