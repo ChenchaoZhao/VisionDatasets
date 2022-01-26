@@ -1,2 +1,2 @@
-# Vision Datasets
-An addition to TorchVision dataset collection
+# TorchVision Extra
+Extra datasets compatible with TorchVision format
