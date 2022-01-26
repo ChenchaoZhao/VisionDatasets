@@ -79,15 +79,15 @@ class OxfordCatDog(VisionDataset):
             name = " ".join(fn.lower().split("_")[:-1])
             if name not in self.name_to_ids:
                 if int(coarse) - 1 == 0:
-                    prefix = "cat"
+                    coarse_name = "cat"
                 elif int(coarse) - 1 == 1:
-                    prefix = "dog"
+                    coarse_name = "dog"
                 else:
                     raise ValueError(
-                        f"Coarse label should only be 1 or 2 but get {coarse}"
+                        f"Coarse label should only be 1 or 2 but got {coarse}"
                     )
 
-                name = f"{prefix}::{name}"
+                name = f"{name}, {coarse_name}"
 
                 self.name_to_ids[name] = (
                     int(general) - 1,
@@ -105,10 +105,6 @@ class OxfordCatDog(VisionDataset):
         self.general_labels = np.array(general_labels)
         self.coarse_labels = np.array(coarse_labels)
         self.fine_labels = np.array(fine_labels)
-
-    def _load_bboxes(self):
-
-        raise NotImplementedError("bbox not implemented")
 
     def __len__(self):
 
@@ -136,13 +132,13 @@ class OxfordCatDog(VisionDataset):
 
         return out if self.transforms is None else self.transforms(out)
 
-    def __repr__(self):
+    def extra_repr(self):
 
         out = []
-        out.append(self.__class__.__name__)
-        out.append("\t" + f"root: {self.root}")
-        out.append("\t" + f"image root: {self.image_root}")
-        out.append("\t" + f"annotation root: {self.annotation_root}")
-        out.append("\t" + f"split: {self.split}")
-        out.append("\t" + f"mode: {self.mode}")
-        out.append("\t" + f"length: {self.__len__()}")
+        INDENT = " " * self.repr_indent
+        out.append(INDENT + f"image root: {self.image_root}")
+        out.append(INDENT + f"annotation root: {self.annotation_root}")
+        out.append(INDENT + f"split: {self.split}")
+        out.append(INDENT + f"mode: {self.mode}")
+
+        return "\n".join(out)
