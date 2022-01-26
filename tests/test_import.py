@@ -1,5 +1,5 @@
 def test_import():
 
-    import visiondatasets
+    import torchvision_extra as tvx
 
-    print(visiondatasets.__version__)
+    print(tvx.__version__)
