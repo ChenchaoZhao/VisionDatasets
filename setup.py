@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-from visiondatasets import __version__
+from torchvision_extra import __version__
 
 # load readme
 with open("README.md", "r") as f:
@@ -8,7 +8,7 @@ with open("README.md", "r") as f:
 
 
 setup(
-    name="visiondatasets",
+    name="torchvision-extra",
     version=__version__,
     author="Chenchao Zhao",
     author_email="chenchao.zhao@gmail.com",
