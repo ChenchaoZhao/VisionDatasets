@@ -47,7 +47,7 @@ class OxfordCatDog(VisionDataset):
         transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
         download: bool = False,
-    ):
+    ) -> None:
         super().__init__(root, transforms, transform, target_transform)
 
         assert split in self._splits
@@ -81,15 +81,15 @@ class OxfordCatDog(VisionDataset):
         self._load_readme()
         self._load_labels(split)
 
-    def _download(self):
+    def _download(self) -> None:
         for fn, url in self.urls.items():
             download_and_extract_archive(url, download_root=self.root, filename=fn)
 
-    def _load_readme(self):
+    def _load_readme(self) -> None:
         with open(os.path.join(self.annotation_root, "README"), "r") as f:
             self.__doc__ = f.read()
 
-    def _load_labels(self, split: str):
+    def _load_labels(self, split: str) -> None:
 
         filenames = []
         general_labels = []
