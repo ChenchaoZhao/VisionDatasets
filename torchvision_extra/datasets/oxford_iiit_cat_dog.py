@@ -1,12 +1,23 @@
 import os
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional, Set
 
 import numpy as np
 from PIL import Image
 from torchvision.datasets import VisionDataset
+from torchvision.datasets.utils import download_and_extract_archive
+
+__all__ = ["OxfordCatDog"]
 
 
 class OxfordCatDog(VisionDataset):
+
+    _splits: Set[str] = {"train", "test", "all"}
+    _modes: Set[str] = {"mask", "label"}
+    urls: Dict[str, str] = {
+        "images": "https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz",
+        "annotations": "https://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz",
+    }
+
     def __init__(
         self,
         root: str,
@@ -15,10 +26,11 @@ class OxfordCatDog(VisionDataset):
         transforms: Optional[Callable] = None,
         transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
+        download: bool = False,
     ):
         super().__init__(root, transforms, transform, target_transform)
 
-        assert split in {"train", "test", "all"}
+        assert split in self._splits
 
         self.split = split
 
@@ -26,7 +38,7 @@ class OxfordCatDog(VisionDataset):
         self.load_label = False
 
         def set_flag(mode):
-            assert mode in {"mask", "label"}
+            assert mode in self._modes
             setattr(self, f"load_{mode}", True)
 
         if isinstance(mode, str):
@@ -40,17 +52,24 @@ class OxfordCatDog(VisionDataset):
             )
 
         self.mode = mode
-        self.image_root = os.path.join(root, "images")
-        self.annotation_root = os.path.join(root, "annotations")
+        self.image_root = os.path.join(self.root, "images")
+        self.annotation_root = os.path.join(self.root, "annotations")
+
+        if download:
+            self._download()
 
         self._load_readme()
         self._load_labels(split)
+
+    def _download(self):
+        for fn, url in self.urls.items():
+            download_and_extract_archive(url, download_root=self.root, filename=fn)
 
     def _load_readme(self):
         with open(os.path.join(self.annotation_root, "README"), "r") as f:
             self.__doc__ = f.read()
 
-    def _load_labels(self, split):
+    def _load_labels(self, split: str):
 
         filenames = []
         general_labels = []
@@ -100,11 +119,11 @@ class OxfordCatDog(VisionDataset):
         self.coarse_labels = np.array(coarse_labels)
         self.fine_labels = np.array(fine_labels)
 
-    def __len__(self):
+    def __len__(self) -> int:
 
         return len(self.filenames)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
 
         fn = self.filenames[idx]
         out = {}
@@ -125,7 +144,7 @@ class OxfordCatDog(VisionDataset):
 
         return out if self.transforms is None else self.transforms(out)
 
-    def extra_repr(self):
+    def extra_repr(self) -> str:
 
         out = []
         INDENT = " " * self.repr_indent
