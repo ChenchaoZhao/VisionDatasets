@@ -10,6 +10,26 @@ __all__ = ["OxfordCatDog"]
 
 
 class OxfordCatDog(VisionDataset):
+    """
+    Oxford IIIT Cat and Dog Dataset.
+
+    Parameters
+    ----------
+    root : str
+        Root directory of the dataset.
+    split : str
+        Can be `train`, `test`, or `all`.
+    mode : Optional[str]
+        Can be `label` or `mask` (the default is "label").
+    transforms : Optional[Callable]
+        Torchvision `StandardTransform`.
+    transform : Optional[Callable]
+        Image transform.
+    target_transform : Optional[Callable]
+        Target transform.
+    download : bool
+        Whether download or not (the default is False).
+    """
 
     _splits: Set[str] = {"train", "test", "all"}
     _modes: Set[str] = {"mask", "label"}
