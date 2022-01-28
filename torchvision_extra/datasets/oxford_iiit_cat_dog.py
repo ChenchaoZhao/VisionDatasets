@@ -49,7 +49,7 @@ class OxfordCatDog(OxfordIIITPet):
         with open(self._anns_folder / "README", "r") as f:
             return f.read()
 
-    def _load_labels(self, split: str) -> None:
+    def _load_labels(self) -> None:
 
         filenames = []
         general_labels = []
