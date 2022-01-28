@@ -101,6 +101,8 @@ class OxfordCatDog(OxfordIIITPet):
         self._species_labels = general_labels
         self._breed_labels = fine_labels
         self.species_to_species_idx = {"Cat": 0, "Dog": 1}
+        self.cat_breed_to_breed_idx = {}
+        self.dog_breed_to_breed_idx = {}
 
         for name, idx_tuple in self.class_to_idx_tuple.items():
             breed, species = name.split(", ")
