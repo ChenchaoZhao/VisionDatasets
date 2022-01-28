@@ -42,6 +42,8 @@ class OxfordCatDog(OxfordIIITPet):
 
         self.return_bbox = return_bbox
         self.read_me = self._load_readme()
+        # load species and breed labels
+        self._load_labels()
 
     def _load_readme(self) -> str:
         with open(self._anns_folder / "README", "r") as f:
