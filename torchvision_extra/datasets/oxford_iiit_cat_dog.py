@@ -102,7 +102,7 @@ class OxfordCatDog(OxfordIIITPet):
         self._breed_labels = fine_labels
         self.cat_vs_dog_to_idx = {"Cat": 0, "Dog": 1}
 
-        for name, idx_tuple in self.class_to_idx_tuple:
+        for name, idx_tuple in self.class_to_idx_tuple.items():
             breed, species = name.split(", ")
             if species == "Cat":
                 self.cat_breed_to_idx = {breed: idx_tuple[-1]}
