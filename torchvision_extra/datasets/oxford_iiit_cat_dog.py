@@ -98,13 +98,13 @@ class OxfordCatDog(OxfordIIITPet):
             fine_labels.append(int(fine) - 1)
 
         self._filenames = filenames
-        self._cat_vs_dog_labels = general_labels
+        self._species_labels = general_labels
         self._breed_labels = fine_labels
-        self.cat_vs_dog_to_idx = {"Cat": 0, "Dog": 1}
+        self.species_to_species_idx = {"Cat": 0, "Dog": 1}
 
         for name, idx_tuple in self.class_to_idx_tuple.items():
             breed, species = name.split(", ")
             if species == "Cat":
-                self.cat_breed_to_idx = {breed: idx_tuple[-1]}
+                self.cat_breed_to_breed_idx[breed] = idx_tuple[-1]
             else:  # species == 'Dog'
-                self.dog_breed_to_idx = {breed: idx_tuple[-1]}
+                self.dog_breed_to_breed_idx[breed] = idx_tuple[-1]
