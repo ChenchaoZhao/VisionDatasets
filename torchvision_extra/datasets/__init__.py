@@ -1,1 +1,1 @@
-from torchvision.datasets import StandardTransform
+from torchvision.datasets.vision import StandardTransform
