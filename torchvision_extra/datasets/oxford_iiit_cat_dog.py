@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Sequence, Union
+from typing import Any, Callable, Dict, Optional, Sequence, Union
 
 from .oxford_iiit_pet import OxfordIIITPet
 
@@ -110,3 +110,22 @@ class OxfordCatDog(OxfordIIITPet):
                 self.cat_breed_to_breed_idx[breed] = idx_tuple[-1]
             else:  # species == 'Dog'
                 self.dog_breed_to_breed_idx[breed] = idx_tuple[-1]
+
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
+        image, target = super().__getitem__(idx)
+        outputs = dict(image=image)
+
+        if target is None:
+            return outputs
+
+        if isinstance(self._target_types, (list, tuple)):
+            for tdx, target_type in enumerate(self._target_types):
+                outputs[target_type] = target[tdx]
+        else:  # is str type
+            outputs[self._target_types] = target
+
+        outputs["species"] = self._species_labels[idx]
+        outputs["breed"] = self._breed_labels[idx]
+        outputs["flat_label"] = self._labels[idx]
+
+        return outputs
