@@ -118,11 +118,11 @@ class OxfordCatDog(OxfordIIITPet):
         if target is None:
             return outputs
 
-        if isinstance(self._target_types, (list, tuple)):
-            for tdx, target_type in enumerate(self._target_types):
-                outputs[target_type] = target[tdx]
-        else:  # is str type
-            outputs[self._target_types] = target
+        if len(self._target_types) == 1:
+            target = [target]
+
+        for tdx, target_type in enumerate(self._target_types):
+            outputs[target_type] = target[tdx]
 
         outputs["species"] = self._species_labels[idx]
         outputs["breed"] = self._breed_labels[idx]
