@@ -98,8 +98,9 @@ class OxfordCatDog(OxfordIIITPet):
             fine_labels.append(int(fine) - 1)
 
         self._filenames = filenames
-        self._species_labels = general_labels
+        self._species_labels = coarse_labels
         self._breed_labels = fine_labels
+        self._flat_labels = general_labels
         self.species_to_species_idx = {"Cat": 0, "Dog": 1}
         self.cat_breed_to_breed_idx = {}
         self.dog_breed_to_breed_idx = {}
