@@ -51,10 +51,7 @@ class OxfordCatDog(OxfordIIITPet):
 
     def _load_labels(self) -> None:
 
-        filenames = []
-        general_labels = []
-        coarse_labels = []
-        fine_labels = []
+        pass
 
         self.class_to_idx_tuple = {}
         self.idx_to_name = {}
@@ -92,15 +89,6 @@ class OxfordCatDog(OxfordIIITPet):
                     int(fine) - 1,
                 )
 
-            filenames.append(fn)
-            general_labels.append(int(general) - 1)
-            coarse_labels.append(int(coarse) - 1)
-            fine_labels.append(int(fine) - 1)
-
-        self._filenames = filenames
-        self._species_labels = coarse_labels
-        self._breed_labels = fine_labels
-        self._flat_labels = general_labels
         self.species_to_species_idx = {"Cat": 0, "Dog": 1}
         self.cat_breed_to_breed_idx = {}
         self.dog_breed_to_breed_idx = {}
@@ -125,8 +113,10 @@ class OxfordCatDog(OxfordIIITPet):
         for tdx, target_type in enumerate(self._target_types):
             outputs[target_type] = target[tdx]
 
-        outputs["species"] = self._species_labels[idx]
-        outputs["breed"] = self._breed_labels[idx]
-        outputs["flat_label"] = self._labels[idx]
+        flat_label = self._labels[idx]
+        species_label, breed_label = self.idx_to_species_breed_idx[flat_label]
+        outputs["species"] = species_label
+        outputs["breed"] = breed_label
+        outputs["flat_label"] = flat_label
 
         return outputs
