@@ -1,13 +1,29 @@
+import os
+import os.path
 import pathlib
 from typing import Callable, List, Optional, Tuple
 
-from torchvision.datasets.utils import verify_str_arg
+from torchvision.datasets.utils import download_and_extract_archive, verify_str_arg
 from torchvision.datasets.vision import VisionDataset
 
 
 class StanfordDogs(VisionDataset):
 
     output_fields: Tuple[str] = ("image", "label", "bbox")
+    _RESOURCES = (
+        (
+            "http://vision.stanford.edu/aditya86/ImageNetDogs/images.tar",
+            None,
+        ),
+        (
+            "http://vision.stanford.edu/aditya86/ImageNetDogs/annotation.tar",
+            None,
+        ),
+        (
+            "http://vision.stanford.edu/aditya86/ImageNetDogs/lists.tar",
+            None,
+        ),
+    )
 
     def __init__(
         self,
@@ -31,7 +47,7 @@ class StanfordDogs(VisionDataset):
         self._base_folder = pathlib.Path(self.root) / "stanford-dogs"
         self._image_folder = self._base_folder / "Images"
         self._anno_folder = self._base_folder / "Annotation"
-        self._split_folder = self._base_folder / "lists"
+        self._list_folder = self._base_folder / "lists"
 
         if download:
             self._download()
@@ -79,16 +95,26 @@ class StanfordDogs(VisionDataset):
     def __len__(self) -> int:
         return len(self._images)
 
-    def _download(self):
-        pass
+    def _download(self) -> None:
+        if self._check_exists():
+            return
+
+        for url, md5 in self._RESOURCES:
+            download_and_extract_archive(
+                url, download_root=str(self._base_folder), md5=md5
+            )
 
     def _check_exists(self) -> bool:
-        pass
+        for folder in (self._image_folder, self._anno_folder, self._list_folder):
+            if not (os.path.exists(folder) and os.path.isdir(folder)):
+                return False
+        else:
+            return True
 
     def _load_split(self):
         import scipy.io
 
-        split_info = scipy.io.loadmat(self._split_folder / f"{self._split}_list.mat")
+        split_info = scipy.io.loadmat(self._list_folder / f"{self._split}_list.mat")
         self._images = [f[0][0] for f in split_info["file_list"]]
         self._labels = [l[0] - 1 for l in split_info["labels"]]
         self._annos = [a[0][0] for a in split_info["annotation_list"]]
@@ -110,6 +136,5 @@ class StanfordDogs(VisionDataset):
         return boxes
 
     def _load_boxes(self):
-
         for anno in self._annos:
             self.boxes.append(self.__load_boxes_per_image(anno))
