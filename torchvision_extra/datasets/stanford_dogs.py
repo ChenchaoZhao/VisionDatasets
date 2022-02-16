@@ -72,7 +72,7 @@ class StanfordDogs(VisionDataset):
         self._base_folder = pathlib.Path(self.root) / "stanford-dogs"
         self._image_folder = self._base_folder / "Images"
         self._anno_folder = self._base_folder / "Annotation"
-        self._list_folder = self._base_folder / "lists"
+        self._list_folder = self._base_folder
 
         if download:
             self._download()
