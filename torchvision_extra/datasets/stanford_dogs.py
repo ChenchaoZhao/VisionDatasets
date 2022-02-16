@@ -177,4 +177,4 @@ class StanfordDogs(VisionDataset):
 
     def _load_boxes(self):
         for anno in self._annos:
-            self.boxes.append(self.__load_boxes_per_image(anno))
+            self._boxes.append(self.__load_boxes_per_image(anno))
