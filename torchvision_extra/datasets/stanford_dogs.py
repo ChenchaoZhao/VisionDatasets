@@ -50,12 +50,17 @@ class StanfordDogs(VisionDataset):
             " ".join(part.title() for part in raw_cls.split("_"))
             for raw_cls, _ in sorted(  # sort the set of (str, int) using int
                 {
-                    (_image.split("/")[0].split("-", 1)[1], label)
+                    (
+                        _image.split("/")[0].split("-", 1)[1],
+                        label,
+                    )  # split '-' from left up to 1 '-'
                     for _image, label in zip(self._images, self._labels)
                 },
                 key=lambda image_id_and_label: image_id_and_label[1],
             )
-        ]  # e.g. n02085620-Chihuahua/n02085620_2650.jpg
+        ]
+        # e.g. n02085620-Chihuahua/n02085620_2650.jpg,
+        #      n02095314-wire-haired_fox_terrier/n02095314_3052.jpg
 
         self.class_to_idx = dict(zip(self.classes, range(len(self.classes))))
 
