@@ -8,6 +8,11 @@ from torchvision.datasets.vision import VisionDataset
 
 
 class StanfordDogs(VisionDataset):
+    """
+    Stanford Dogs Dataset.
+
+    Inspired by https://github.com/zrsmithson/Stanford-dogs.
+    """
 
     OUTPUT_FIELDS: Tuple[str] = ("image", "label", "bbox")
 
