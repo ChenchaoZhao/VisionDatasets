@@ -15,7 +15,11 @@ class StanfordDogs(VisionDataset):
     Inspired by https://github.com/zrsmithson/Stanford-dogs.
     """
 
-    OUTPUT_FIELDS: Tuple[str] = ("image", "label", "bbox")
+    OUTPUT_FIELDS: Tuple[str] = (
+        "image",
+        "label",
+        "bbox",
+    )
 
     _RESOURCES = (
         (
