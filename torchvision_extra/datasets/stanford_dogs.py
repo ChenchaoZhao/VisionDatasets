@@ -1,8 +1,9 @@
 import os
 import os.path
 import pathlib
-from typing import Callable, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
+from PIL import Image
 from torchvision.datasets.utils import download_and_extract_archive, verify_str_arg
 from torchvision.datasets.vision import VisionDataset
 
@@ -89,17 +90,32 @@ class StanfordDogs(VisionDataset):
         self._images = [self._image_folder / i for i in self._images]
         self._annos = [self._anno_folder / a for a in self._annos]
 
-        assert len(self._images) == len(
-            self._annos
-        ), f"Number of images ({len(self._images)}) is not consistent with number of annotations ({len(self._annos)})"
+        if len(self._images) != len(self._annos):
+            raise ValueError(
+                f"Number of images ({len(self._images)}) is not consistent with number of annotations ({len(self._annos)})"
+            )
 
-        self._boxes = (
-            []
-        )  # list of List[List[int]], e.g. [[x0, y0, x1, y1], [x0, y0, x1, y1], ...]
+        # list of List[List[int]], e.g. [[x0, y0, x1, y1], [x0, y0, x1, y1], ...]
+        self._boxes = []
         self._load_boxes()
 
     def __len__(self) -> int:
         return len(self._images)
+
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
+        image: Image = Image.open(self._images[idx]).convert("RGB")
+        boxes: List[List[int]] = self._boxes[idx]
+        label: int = self._labels[idx]
+        # the number of labels per image is the same as number of bboxes
+        labels: List[int] = [label] * len(boxes)  #
+
+        items = {"image": image, "bboxes": boxes, "label": labels}
+
+        if self.transforms:
+            transformed = self.transforms(**items)
+            return transformed
+        else:
+            return items
 
     def _download(self) -> None:
         if self._check_exists():
