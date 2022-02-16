@@ -9,7 +9,8 @@ from torchvision.datasets.vision import VisionDataset
 
 class StanfordDogs(VisionDataset):
 
-    output_fields: Tuple[str] = ("image", "label", "bbox")
+    OUTPUT_FIELDS: Tuple[str] = ("image", "label", "bbox")
+
     _RESOURCES = (
         (
             "http://vision.stanford.edu/aditya86/ImageNetDogs/images.tar",
