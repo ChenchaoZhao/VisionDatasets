@@ -62,6 +62,14 @@ class StanfordDogs(VisionDataset):
         self._images = [self._image_folder / i for i in self._images]
         self._annos = [self._anno_folder / a for a in self._annos]
 
+        assert len(self._images) == len(
+            self._annos
+        ), f"Number of images ({len(self._images)}) is not consistent with "
+        f"number of annotations ({len(self._annos)})"
+
+    def __len__(self) -> int:
+        return len(self._images)
+
     def _download(self):
         pass
 
