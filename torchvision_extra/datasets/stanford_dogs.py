@@ -29,8 +29,8 @@ class StanfordDogs(VisionDataset):
         )
 
         self._base_folder = pathlib.Path(self.root) / "stanford-dogs"
-        self._images_folder = self._base_folder / "images"
-        self._anns_folder = self._base_folder / "Annotation"
+        self._image_folder = self._base_folder / "images"
+        self._anno_folder = self._base_folder / "Annotation"
         self._split_folder = self._base_folder / "lists"
 
         if download:
@@ -58,6 +58,9 @@ class StanfordDogs(VisionDataset):
         ]  # e.g. n02085620-Chihuahua/n02085620_2650.jpg
 
         self.class_to_idx = dict(zip(self.classes, range(len(self.classes))))
+
+        self._images = [self._image_folder / i for i in self._images]
+        self._annos = [self._anno_folder / a for a in self._annos]
 
     def _download(self):
         pass
