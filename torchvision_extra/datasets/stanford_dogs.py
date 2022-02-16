@@ -19,15 +19,15 @@ class StanfordDogs(VisionDataset):
     _RESOURCES = (
         (
             "http://vision.stanford.edu/aditya86/ImageNetDogs/images.tar",
-            None,
+            "1bb1f2a596ae7057f99d7d75860002ef",
         ),
         (
             "http://vision.stanford.edu/aditya86/ImageNetDogs/annotation.tar",
-            None,
+            "4298cc0031f6bc6e74612ac83b5988e2",
         ),
         (
             "http://vision.stanford.edu/aditya86/ImageNetDogs/lists.tar",
-            None,
+            "edbb9f16854ec66506b5f09b583e0656",
         ),
     )
 
