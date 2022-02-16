@@ -69,7 +69,8 @@ class StanfordDogs(VisionDataset):
 
         assert len(self._images) == len(
             self._annos
-        ), f"Number of images ({len(self._images)}) is not consistent with "
+        ), f"Number of images ({len(self._images)})"
+        " is not consistent with "
         f"number of annotations ({len(self._annos)})"
 
     def __len__(self) -> int:
