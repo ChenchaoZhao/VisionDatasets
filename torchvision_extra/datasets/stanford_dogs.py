@@ -1,5 +1,5 @@
 import pathlib
-from typing import Callable, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from torchvision.datasets.utils import verify_str_arg
 from torchvision.datasets.vision import VisionDataset
@@ -71,6 +71,11 @@ class StanfordDogs(VisionDataset):
             self._annos
         ), f"Number of images ({len(self._images)}) is not consistent with number of annotations ({len(self._annos)})"
 
+        self._boxes = (
+            []
+        )  # list of List[List[int]], e.g. [[x0, y0, x1, y1], [x0, y0, x1, y1], ...]
+        self._load_boxes()
+
     def __len__(self) -> int:
         return len(self._images)
 
@@ -87,3 +92,24 @@ class StanfordDogs(VisionDataset):
         self._images = [f[0][0] for f in split_info["file_list"]]
         self._labels = [l[0] - 1 for l in split_info["labels"]]
         self._annos = [a[0][0] for a in split_info["annotation_list"]]
+
+    def __load_boxes_per_image(self, path: str) -> List[int]:
+        import xml.etree.ElementTree
+
+        e = xml.etree.ElementTree.parse(path).getroot()
+        boxes = []
+        for objs in e.iter("object"):
+            boxes.append(
+                [
+                    int(objs.find("bndbox").find("xmin").text),
+                    int(objs.find("bndbox").find("ymin").text),
+                    int(objs.find("bndbox").find("xmax").text),
+                    int(objs.find("bndbox").find("ymax").text),
+                ]
+            )
+        return boxes
+
+    def _load_boxes(self):
+
+        for anno in self._annos:
+            self.boxes.append(self.__load_boxes_per_image(anno))
