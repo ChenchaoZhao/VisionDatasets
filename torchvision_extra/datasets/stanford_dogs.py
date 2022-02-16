@@ -159,7 +159,7 @@ class StanfordDogs(VisionDataset):
         self._labels = [l[0] - 1 for l in split_info["labels"]]
         self._annos = [a[0][0] for a in split_info["annotation_list"]]
 
-    def __load_boxes_per_image(self, path: str) -> List[int]:
+    def _load_boxes_per_image(self, path: str) -> List[int]:
         import xml.etree.ElementTree
 
         e = xml.etree.ElementTree.parse(path).getroot()
