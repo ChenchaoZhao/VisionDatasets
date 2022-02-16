@@ -10,15 +10,29 @@ from torchvision.datasets.vision import VisionDataset
 
 class StanfordDogs(VisionDataset):
     """
-    Stanford Dogs Dataset.
+    `Stanford Dogs Dataset.
 
-    Inspired by https://github.com/zrsmithson/Stanford-dogs.
+    <http://vision.stanford.edu/aditya86/ImageNetDogs/>`_.
+
+    Implementation of this dataset class was inspired by <https://github.com/zrsmithson/Stanford-dogs>.
+
+    Args:
+        root (str): Root directory of the dataset.
+        split (str, optional): The dataset split, supports ``"train"`` (default) or ``"test"``.
+        transforms (callable, optional): A function/transform that takes in a dictionary of
+            `image` (PIL Image), `bboxes` (e.g. [[x0, y0, x1, y1]]), `labels` ([1]) and returns a transformed version.
+        download (bool): Description of parameter `download`. Defaults to False.
+
+    Attributes:
+        classes (List[str]): Description of parameter `classes`.
+        class_to_idx (Dict[str, int]): Description of parameter `class_to_idx`.
+        OUTPUT_FIELDS (Tuple[str]): Description of parameter `OUTPUT_FIELDS: Tuple[str]`.
     """
 
     OUTPUT_FIELDS: Tuple[str] = (
         "image",
-        "label",
-        "bbox",
+        "labels",
+        "bboxes",
     )
 
     _RESOURCES = (
@@ -41,8 +55,6 @@ class StanfordDogs(VisionDataset):
         root: str,
         split: str = "train",
         transforms: Optional[Callable] = None,
-        transform: Optional[Callable] = None,
-        target_transform: Optional[Callable] = None,
         download: bool = False,
     ):
 
@@ -51,8 +63,8 @@ class StanfordDogs(VisionDataset):
         super().__init__(
             root,
             transforms=transforms,
-            transform=transform,
-            target_transform=target_transform,
+            transform=None,
+            target_transform=None,
         )
 
         self._base_folder = pathlib.Path(self.root) / "stanford-dogs"
@@ -113,7 +125,7 @@ class StanfordDogs(VisionDataset):
         # the number of labels per image is the same as number of bboxes
         labels: List[int] = [label] * len(boxes)  #
 
-        items = {"image": image, "bboxes": boxes, "label": labels}
+        items = {"image": image, "bboxes": boxes, "labels": labels}
 
         if self.transforms:
             transformed = self.transforms(**items)
