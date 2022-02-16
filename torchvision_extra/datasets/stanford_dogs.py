@@ -7,6 +7,8 @@ from PIL import Image
 from torchvision.datasets.utils import download_and_extract_archive, verify_str_arg
 from torchvision.datasets.vision import VisionDataset
 
+__all__ = ["StanfordDogs"]
+
 
 class StanfordDogs(VisionDataset):
     """
