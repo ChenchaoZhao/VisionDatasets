@@ -1,6 +1,8 @@
-from typing import *
+from typing import Any, Callable, Dict, Optional, Tuple
 
 from PIL.Image import Image as PilImage
+
+__all__ = ["DictionaryTransforms", "DictionaryTransform"]
 
 
 class _DictionaryTransformBase(Callable):
