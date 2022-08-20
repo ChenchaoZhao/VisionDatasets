@@ -4,7 +4,7 @@ import pathlib
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import PIL
-from PIL.Image import PilImage
+from PIL.Image import Image as PilImage
 from torchvision.datasets.utils import download_and_extract_archive, verify_str_arg
 from torchvision.datasets.vision import VisionDataset
 
