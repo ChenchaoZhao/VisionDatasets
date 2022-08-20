@@ -4,6 +4,8 @@ import numpy as np
 import torch
 import torchvision.transforms.functional as TF
 
+__all__ = ["ToTensors"]
+
 
 class ToTensors(Callable):
     """
