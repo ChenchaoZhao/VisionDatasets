@@ -1,5 +1,5 @@
 def test_import():
 
-    import torchvision_extra as tvx
+    import torchvision_extra as vx
 
-    print(tvx.__version__)
+    print(vx.__version__)
