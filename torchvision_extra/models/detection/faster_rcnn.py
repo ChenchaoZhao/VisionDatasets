@@ -53,6 +53,10 @@ class MultiVocabularyFastRCNNPredictor(FastRCNNPredictor):
         self.__current_vocabulary = vocab_name
 
     @property
+    def label_shift(self) -> int:
+        return self._vocabulary_to_range[self.current_vocabulary][0]
+
+    @property
     def current_vocabulary(self) -> str:
         return self.__current_vocabulary
 
