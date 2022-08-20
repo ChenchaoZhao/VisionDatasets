@@ -3,7 +3,8 @@ import os.path
 import pathlib
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from PIL import Image
+import PIL
+from PIL.Image import PilImage
 from torchvision.datasets.utils import download_and_extract_archive, verify_str_arg
 from torchvision.datasets.vision import VisionDataset
 
@@ -57,6 +58,8 @@ class StanfordDogs(VisionDataset):
         root: str,
         split: str = "train",
         transforms: Optional[Callable] = None,
+        transform: Optional[Callable] = None,
+        target_transform: Optional[Callable] = None,
         download: bool = False,
     ):
 
@@ -65,8 +68,8 @@ class StanfordDogs(VisionDataset):
         super().__init__(
             root,
             transforms=transforms,
-            transform=None,
-            target_transform=None,
+            transform=transform,
+            target_transform=target_transform,
         )
 
         self._base_folder = pathlib.Path(self.root) / "stanford-dogs"
@@ -121,19 +124,18 @@ class StanfordDogs(VisionDataset):
         return len(self._images)
 
     def __getitem__(self, idx: int) -> Dict[str, Any]:
-        image: Image = Image.open(self._images[idx]).convert("RGB")
+        image: PilImage = PIL.Image.open(self._images[idx]).convert("RGB")
         boxes: List[List[int]] = self._boxes[idx]
         label: int = self._labels[idx]
         # the number of labels per image is the same as number of bboxes
         labels: List[int] = [label] * len(boxes)  #
 
-        items = {"image": image, "bboxes": boxes, "labels": labels}
+        target = {"bboxes": boxes, "labels": labels}
 
         if self.transforms:
-            transformed = self.transforms(**items)
-            return transformed
-        else:
-            return items
+            image, target = self.transforms(image, target)
+
+        return image, target
 
     def _download(self) -> None:
         if self._check_exists():
