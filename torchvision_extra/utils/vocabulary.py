@@ -1,9 +1,9 @@
-from typing import *
+from typing import Sequence, Union
 
 __all__ = ["Vocabulary"]
 
 
-class Vocabulary(List, Dict):
+class Vocabulary:
     """
     Vocabulary.
 
