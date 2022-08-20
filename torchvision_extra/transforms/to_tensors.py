@@ -1,4 +1,4 @@
-from typing import *
+from typing import Any, Callable, Dict, Optional, Tuple
 
 import numpy as np
 import torch
