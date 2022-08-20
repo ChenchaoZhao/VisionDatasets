@@ -10,6 +10,14 @@ __all__ = ["MultiVocabularyFastRCNNPredictor"]
 
 
 class MultiVocabularyFastRCNNPredictor(FastRCNNPredictor):
+    """
+    MultiVocabularyFastRCNNPredictor.
+
+    Train a FasterRCNN using multiple Vocabularies Set vocabulary using
+    `set_vocabulary` Export partial head for a single vocabulary using
+    `export_current_vocab_heads`
+    """
+
     def __init__(self, in_channels, vocabulary_sizes: Dict[str, int]):
         vocabulary_sizes = {str(k): int(v) for k, v in vocabulary_sizes.items()}
         torch._assert(
