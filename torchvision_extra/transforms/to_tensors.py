@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, Optional, Tuple
 import numpy as np
 import torch
 import torchvision.transforms.functional as TF
+from PIL.Image import Image as PilImage
 
 __all__ = ["ToTensors"]
 
@@ -65,7 +66,10 @@ class ToTensors(Callable):
         if isinstance(x, (int, float)):
             return x
 
-        return TF.to_tensor(x)
+        if isinstance(x, PilImage):
+            return TF.to_tensor(x)
+
+        return x
 
     def __repr__(self) -> str:
         head = self.__class__.__name__
