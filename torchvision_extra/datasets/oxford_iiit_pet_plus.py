@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
 
 import numpy as np
@@ -57,8 +58,13 @@ class OxfordIIITPetPlus(OxfordIIITPet):
         self._boxes = []
         for idx in range(len(self)):
             mask = PIL.Image.open(self._segs[idx])
-            ydx, xdx = np.where(np.array(mask) == 3)
-            box = [[xdx.min(), ydx.min(), xdx.max(), ydx.max()]]
+            try:
+                ydx, xdx = np.where(np.array(mask) == 3)
+                box = [[xdx.min(), ydx.min(), xdx.max(), ydx.max()]]
+            except ValueError:
+                warnings.warn(f"Data item {idx} does not have a valid mask or bbox.")
+                W, H = mask.size
+                box = [[0.0, 0.0, W, H]]
             self._boxes.append(box)
 
     def _load_readme(self) -> str:
