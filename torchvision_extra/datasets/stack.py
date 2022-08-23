@@ -16,9 +16,6 @@ class StackDataset(Dataset):
         assert isinstance(
             datasets, dict
         ), f"Input `datasets` should be a dict but got type {type(datasets)}"
-        assert (
-            len(datasets) > 1
-        ), f"Input `datasets` should be at least 2 but got {len(datasets)}"
 
         self.datasets = datasets
         max_len = 0
