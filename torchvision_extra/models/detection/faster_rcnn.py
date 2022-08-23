@@ -90,10 +90,10 @@ class MultiVocabularyFastRCNNPredictor(FastRCNNPredictor):
             cls_w = cls_w[[0] + [i for i in range(min_idx, max_idx + 1)]]
             cls_b = cls_b[[0] + [i for i in range(min_idx, max_idx + 1)]]
             box_w = box_w[
-                [i for i in range(4)] + [i * 4 for i in range(min_idx, max_idx + 1)]
+                [i for i in range(4)] + [i for i in range(4 * min_idx, 4 * max_idx + 1)]
             ]
             box_b = box_b[
-                [i for i in range(4)] + [i * 4 for i in range(min_idx, max_idx + 1)]
+                [i for i in range(4)] + [i for i in range(4 * min_idx, 4 * max_idx + 1)]
             ]
 
         m.cls_score.weight = nn.Parameter(cls_w)
