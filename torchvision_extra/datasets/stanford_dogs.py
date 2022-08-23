@@ -127,10 +127,15 @@ class StanfordDogs(VisionDataset):
         image: PilImage = PIL.Image.open(self._images[idx]).convert("RGB")
         boxes: List[List[int]] = self._boxes[idx]
         label: int = self._labels[idx]
+        W, H = image.size
+        boxes = [
+            [max(0, x0), max(0, y0), min(x1, W), min(y1, H)]
+            for (x0, y0, x1, y1) in boxes
+        ]
         # the number of labels per image is the same as number of bboxes
         labels: List[int] = [label] * len(boxes)  #
 
-        target = {"bboxes": boxes, "labels": labels}
+        target = {"boxes": boxes, "labels": labels}
 
         if self.transforms:
             image, target = self.transforms(image, target)

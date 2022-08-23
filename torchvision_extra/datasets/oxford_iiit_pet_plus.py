@@ -64,10 +64,12 @@ class OxfordIIITPetPlus(OxfordIIITPet):
         self.target_types = target_types
         self.has_cat = has_cat
         self.has_dog = has_dog
+        self.cat_classes = tuple(self.cat_breed_to_breed_idx.keys())
+        self.dog_classes = tuple(self.dog_breed_to_breed_idx)
 
     def _compute_boxes(self):
         self._boxes = []
-        for idx in range(len(self)):
+        for idx in range(len(self._labels)):
             mask = PIL.Image.open(self._segs[idx])
             try:
                 ydx, xdx = np.where(np.array(mask) == 3)
