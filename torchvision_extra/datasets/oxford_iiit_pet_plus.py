@@ -36,6 +36,8 @@ class OxfordIIITPetPlus(OxfordIIITPet):
         transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
         download: bool = False,
+        has_cat: bool = True,
+        has_dog: bool = True,
     ):
 
         super().__init__(
@@ -52,7 +54,16 @@ class OxfordIIITPetPlus(OxfordIIITPet):
         # load species and breed labels
         self._load_labels()
         self._compute_boxes()
+        self.cat_subset_indices = []
+        self.dog_subset_indices = []
+        for idx, l in enumerate(self._labels):
+            if l in self.cat_flat_labels:
+                self.cat_subset_indices.append(idx)
+            else:
+                self.dog_subset_indices.append(idx)
         self.target_types = target_types
+        self.has_cat = has_cat
+        self.has_dog = has_dog
 
     def _compute_boxes(self):
         self._boxes = []
@@ -76,6 +87,8 @@ class OxfordIIITPetPlus(OxfordIIITPet):
         self.class_to_idx_tuple = {}
         self.idx_to_name = {}
         self.idx_to_species_breed_idx = {}
+        self.cat_flat_labels = set()
+        self.dog_flat_labels = set()
 
         with open(self._anns_folder / "list.txt", "r") as f:
             lines = f.readlines()
@@ -89,8 +102,10 @@ class OxfordIIITPetPlus(OxfordIIITPet):
             if name not in self.class_to_idx_tuple:
                 if int(coarse) - 1 == 0:
                     coarse_name = "Cat"
+                    self.cat_flat_labels.add(int(general) - 1)
                 elif int(coarse) - 1 == 1:
                     coarse_name = "Dog"
+                    self.dog_flat_labels.add(int(general) - 1)
                 else:
                     raise ValueError(
                         f"Coarse label should only be 1 or 2 but got {coarse}"
@@ -121,10 +136,25 @@ class OxfordIIITPetPlus(OxfordIIITPet):
                 self.dog_breed_to_breed_idx[breed] = idx_tuple[-1]
 
     def __getitem__(self, idx: int) -> Tuple[Any, Dict[str, Any]]:
+        if self.has_cat and self.has_dog:
+            if idx < 0:
+                idx = len(self) + idx
+                assert idx >= 0
+            return self._get_item(idx)
+
+        if self.has_cat and not self.has_dog:
+            # cat only
+            return self._get_item(self.cat_subset_indices[idx])
+
+        if not self.has_cat and self.has_dog:
+            # dog only
+            return self._get_item(self.dog_subset_indices[idx])
+
+    def _get_item(self, idx: int) -> Tuple[Any, Dict[str, Any]]:
         image = PIL.Image.open(self._images[idx]).convert("RGB")
 
         target: Dict[str, Any] = {}
-        for target_type in self._target_types:
+        for target_type in self.target_types:
             if target_type == "category":
                 target["flat_label"] = self._labels[idx]
             elif target_type == "coarse_category":
@@ -137,7 +167,7 @@ class OxfordIIITPetPlus(OxfordIIITPet):
             elif target_type == "detection":
                 target["boxes"] = self._boxes[idx]
             elif target_type == "segmentation":
-                target.append(PIL.Image.open(self._segs[idx]))
+                target["segmentation"] = PIL.Image.open(self._segs[idx])
             else:
                 raise KeyError(f"Target type ({target_type}) not found.")
 
@@ -145,3 +175,18 @@ class OxfordIIITPetPlus(OxfordIIITPet):
             image, target = self.transforms(image, target)
 
         return image, target
+
+    def __len__(self) -> int:
+
+        if self.has_cat and self.has_dog:
+            return super().__len__()
+
+        if self.has_cat and not self.has_dog:
+            # cat only
+            return len(self.cat_subset_indices)
+
+        if not self.has_cat and self.has_dog:
+            # dog only
+            return len(self.dog_subset_indices)
+
+        return 0
