@@ -105,6 +105,7 @@ class StanfordDogs(VisionDataset):
         ]
         # e.g. n02085620-Chihuahua/n02085620_2650.jpg,
         #      n02095314-wire-haired_fox_terrier/n02095314_3052.jpg
+        self.classes = tuple(self.classes)
 
         self.class_to_idx = dict(zip(self.classes, range(len(self.classes))))
 
